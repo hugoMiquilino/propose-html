@@ -243,7 +243,7 @@
     <div id="app">
         <div id="card">
             <span id="emoji-top">💕</span>
-            <div id="pergunta">[NOME]</div>
+            <div id="pergunta">Ana Beatriz Guedes da Silva</div>
             <div id="pergunta">você aceita namorar comigo?</div>
             <div id="btns">
                 <button id="btn-sim" onclick="handleSim()">Sim 💖</button>
@@ -255,7 +255,7 @@
 
     <div id="overlay">
         <div id="modal">
-            <span id="modal-emoji">💑</span>
+            <span id="modal-emoji">👩‍❤️‍👨</span>
             <div id="modal-txt">Yay, agora somos namorados! &lt;3</div>
             <div id="modal-sub">Que comecem os beijos! 😘✨</div>
             <button id="btn-fechar" onclick="fecharModal()">Eba! 🎉</button>
@@ -281,15 +281,17 @@
         const audio = document.getElementById('bg-audio');
         let playing = false;
 
-        function tryPlay() {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            ctx.resume().then(() => {
-                audio.play().then(() => {
-                    playing = true;
-                    document.getElementById('music-icon').textContent = '🔊';
-                }).catch(() => { });
-            });
+        function unlock() {
+            audio.play().then(() => {
+                playing = true;
+                document.getElementById('music-icon').textContent = '🔊';
+            }).catch(() => { });
+            document.removeEventListener('touchstart', unlock);
+            document.removeEventListener('click', unlock);
         }
+
+        document.addEventListener('touchstart', unlock);
+        document.addEventListener('click', unlock);
 
         function toggleAudio() {
             if (playing) {
@@ -297,22 +299,12 @@
                 playing = false;
                 document.getElementById('music-icon').textContent = '🔇';
             } else {
-                tryPlay();
+                audio.play().then(() => {
+                    playing = true;
+                    document.getElementById('music-icon').textContent = '🔊';
+                });
             }
         }
-
-        // Tenta autoplay imediato
-        window.addEventListener('load', () => {
-            audio.play().then(() => {
-                playing = true;
-                document.getElementById('music-icon').textContent = '🔊';
-            }).catch(() => {
-                // Fallback: aguarda qualquer interação
-                const start = () => { tryPlay(); document.removeEventListener('touchstart', start); document.removeEventListener('click', start); };
-                document.addEventListener('touchstart', start, { once: true });
-                document.addEventListener('click', start, { once: true });
-            });
-        });
     </script>
 
     <script>
